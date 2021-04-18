@@ -19,3 +19,15 @@ countBinTrees n = go (n-1)
     Wir starten also mit 7 Knoten, einer davon wird der Wurzelknoten und die anderen 6 werden auf die beiden Kinder verteilt.
     Wie "go"-Funktion geht alle Möglichkeiten durch, wie die 6 Knoten in den linken und rechten Teilbaum verteilt werden.
 -}
+
+-- Die alternative Variante nutzt die Zahlen von Catalan (siehe Wikipedia):
+
+fac :: Int -> Int
+fac 0 = 1
+fac n = n * fac (n - 1)
+
+countBinTrees' :: Int -> Int
+countBinTrees' n 
+    | even n = 0
+    | otherwise = let m = (n - 1) `div` 2
+                  in fac (2 * m) `div` (fac m * fac (m + 1))
