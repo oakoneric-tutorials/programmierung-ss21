@@ -19,9 +19,25 @@
 \usepackage{listings}
 \usepackage[skins]{tcolorbox}
 \tcbuselibrary{listings}
+%\lstset{
+%	basicstyle=\footnotesize\ttfamily\color{black},
+%	backgroundcolor=\color{white},
+%	fillcolor=\color{white},
+%	rulecolor=\color{gray},
+%	tabsize=2,
+%	% German umlauts
+%	literate=%
+%	{Ö}{{\"O}}1
+%	{Ä}{{\"A}}1
+%	{Ü}{{\"U}}1
+%	{ß}{{\ss}}1
+%	{ü}{{\"u}}1
+%	{ä}{{\"a}}1
+%	{ö}{{\"o}}1
+%}
 \newtcblisting{codebox}{%
-	top=0pt,
-	bottom=0pt,
+	top=-6pt,
+	bottom=-6pt,
 	left=0pt,
 	right=0pt,
 	boxsep=5pt,
@@ -30,6 +46,7 @@
 	colframe=cddarkblue,
 	fonttitle=\bfseries,
 	listing only,
+	listing options={basicstyle=\scriptsize\ttfamily}
 }
 \newtcblisting{smallcodebox}{%
 	top=0pt,
@@ -69,8 +86,8 @@
 	\begin{enumerate}
 		\item Funktionale Programmierung
 		\begin{enumerate}
-			\item Einführung in Haskell: Listen
-			\item Algebraische Datentypen
+			\item Einführung in Haskell
+			\item Listen \& Algebraische Datentypen
 			\item Funktionen höherer Ordnung
 			\item \textbf{Typpolymorphie \& Unifikation}
 			\item Beweis von Programmeigenschaften
@@ -85,7 +102,7 @@
 
 
 
-\section{Aufgabe 1 \\ \textit{\normalsize Typpolymorphie}}
+\section{Typpolymorphie \\ \textit{\normalsize Aufgabe 1}}
 
 \begin{frame}[fragile, t] \frametitle{Typpolymorphie}
 	\footnotesize
@@ -93,16 +110,19 @@
 		\item \textbf{bisher}: Funktionen mit konkreten Datentypen \\
 		z.B. \texttt{length :: [Int] -> Int}
 		\item \textbf{Problem}: Funktion würde auch auf anderen Datentypen funktionieren \\
-		z.B. \texttt{length :: [Bool] -> Int}
+		z.B. \texttt{length :: [Bool] -> Int} oder \texttt{length :: String -> Int}
 		\item \textbf{Lösung}: Typvariablen und polymorphe Funktionen \\
 		z.B. \texttt{length :: [\alert{a}] -> Int}
 	\end{itemize}
-
+	
+	\pause
+	
 	Bei konkreter Instanziierung wird Typvariable an entsprechenden Typbezeichner gebunden (z.B. \texttt{\alert{a} = Int} oder \texttt{\alert{a} = Bool}).
 	
 	\begin{itemize}
 		\item Der Aufruf \texttt{length [1,5,2,7]} liefert für die Typvariable \texttt{\alert{a} = Int}.
 		\item Der Aufruf \texttt{length [True, False, True, True, False]} liefert die Belegung \texttt{\alert{a} = Bool}.
+		\item Der Aufruf \texttt{length "hello"} impliziert \texttt{\alert{a} = Char}.
 	\end{itemize}
 \end{frame}
 
@@ -110,8 +130,7 @@
 \begin{frame}[fragile, t] \frametitle{Aufgabe 1 --- Teil (a)}
 	\textbf{Beispielbaum mit mindestens 5 Blättern} \\[6pt]
 	\begin{codebox}
-data BinTree a = Branch a (BinTree a) (BinTree a) 
-                 | Leaf a
+data BinTree a = Branch a (BinTree a) (BinTree a) | Leaf a
 	\end{codebox}
 	\pause
 	\begin{codebox}
@@ -132,8 +151,7 @@ testTree = Branch 5
 	\textbf{minimale Tiefe eines Baumes}
 	
 	\begin{codebox}
-data BinTree a = Branch a (BinTree a) (BinTree a) 
-                 | Leaf a
+data BinTree a = Branch a (BinTree a) (BinTree a) | Leaf a
 depth :: BinTree a -> Int
 	\end{codebox}
 	
@@ -151,8 +169,7 @@ depth (Branch _ l r) = 1 + min (depth l) (depth r)
 	\textbf{Baum mit Beschriftungsfolge neu beschriften}
 	
 	\begin{codebox}
-data BinTree a = Branch a (BinTree a) (BinTree a) 
-                 | Leaf a
+data BinTree a = Branch a (BinTree a) (BinTree a) | Leaf a
 paths :: BinTree a -> BinTree [a]
 	\end{codebox}
 	
@@ -163,7 +180,7 @@ paths :: BinTree a -> BinTree [a]
 paths = go []
   where
       go :: [a] -> BinTree a -> BinTree [a]
-      go prefix (Leaf   x    ) = Leaf   (prefix ++ [x])
+      go prefix (Leaf   x    ) = Leaf (prefix ++ [x])
       go prefix (Branch x l r) 
       	= Branch (prefix ++ [x]) 
       	    (go (prefix ++ [x]) l) 
@@ -176,8 +193,7 @@ paths = go []
 	\textbf{Map für Bäume}
 	
 	\begin{codebox}
-data BinTree a = Branch a (BinTree a) (BinTree a) 
-                 | Leaf a
+data BinTree a = Branch a (BinTree a) (BinTree a) | Leaf a
 tmap :: (a -> b) -> BinTree a -> BinTree b
 	\end{codebox}
 	
@@ -190,28 +206,11 @@ tmap f (Branch x l r) = Branch (f x) (tmap f l) (tmap f r)
 	\end{codebox}
 \end{frame}
 
-\section{Aufgabe 2 \\ \textit{\normalsize Paare}}
 
-\begin{frame}[fragile, t] \frametitle{Aufgabe 2 --- Teil (a)}
-	\textbf{Liste von Paaren $\to$ Paare von Listen}
-	
-	\begin{codebox}
-unpairs :: [(a,b)] -> ([a], [b])
-	\end{codebox}
-	
-	\bigskip \pause
-	
-	\begin{codebox}
-unpairs :: [(a, b)] -> ([a], [b])
-unpairs []          = ([], [])
-unpairs ((a, b):xs) = let (as, bs) = unpairs xs
-                      in (a:as, b:bs)
-	\end{codebox}
-\end{frame}
-
-
-\begin{frame}[fragile, t] \frametitle{Aufgabe 2 --- Teil (b)}
-	
+{
+\setbeamercolor{frametitle}{fg=white, bg=cdgray}	
+\color{cdgray}
+\begin{frame}[fragile, t] \frametitle{Einschub: Auswertung eines Funktionsaufrufs}
 	\begin{codebox}
 map :: (a -> b) -> [a] -> [b]
 map _ []       = []
@@ -237,14 +236,16 @@ uncurry f (x, y) = f x y
 	\end{ttfamily}
 
 \end{frame}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Aufgabe 3 \\ \textit{\normalsize Unifikation \& Unifikationsalgorithmus}}
+\section{Unifikation \& Unifikationsalgorithmus \\ \textit{\normalsize Aufgabe 3}}
 
 
 \begin{frame}[fragile] \frametitle{Unifikation}
+	\footnotesize
 	\textbf{Motivation:} Typüberprüfung
 		 
 	\begin{codebox}
@@ -263,7 +264,7 @@ h = g . f
 \end{frame}
 
 \begin{frame}[fragile] \frametitle{Unifikation}
-	\small
+	\footnotesize
 	\textbf{Typausdrücke}
 	\begin{itemize}
 		\item \texttt{Int}, \texttt{Bool}, \texttt{Floar}, \texttt{Char}, \texttt{String}
@@ -274,6 +275,7 @@ h = g . f
 	\textbf{Typterme}
 	\begin{itemize}
 		\item Übersetzung \textit{trans}: Typausdruck $\to$ Typterm
+		\pause
 		\item z.B.
 		\begin{equation*}
 			\begin{aligned}
@@ -291,13 +293,13 @@ h = g . f
 \end{frame}
 
 \begin{frame}\frametitle{Unifikationsalgorithmus}
-	\small
+	\footnotesize
 	\begin{itemize}
 		\item \textbf{gegeben:} zwei Typ\textit{terme} $t_1$, $t_2$ 
 		\item \textbf{Ziel:} entscheide, ob $t_1$ und $t_2$ unifizierbar sind
 	\end{itemize}
 	
-	Wir notieren die beiden Typterme als Spalten:
+	Wir notieren die beiden Typterme als Spalte:
 	\begin{equation*}
 		\begin{pmatrix}
 			t_1 \\ t_2
@@ -321,7 +323,7 @@ h = g . f
 \end{frame}
 
 \begin{frame}\frametitle{Unifikationsalgorithmus -- Regeln}
-	\small
+	\footnotesize
 	\begin{itemize}
 		\item \textbf{Dekomposition.} Sei $\delta \in \Sigma$ ein $k$-stelliger Konstruktor, $s_1 , \dots , s_k , t_1 , \dots , t_k$ Terme über Konstruktoren und Variablen.
 		\begin{equation*}
@@ -331,13 +333,13 @@ h = g . f
 			\quad \leadsto \quad
 			\begin{pmatrix} s_1 \\ t_1 \end{pmatrix} , \dots , \begin{pmatrix} s_k \\ t_k \end{pmatrix}
 		\end{equation*}
-		\item \textbf{Elimination.} Sei $x$ eine \textit{Variable} !
+		\item \textbf{Elimination.} Sei $x$ eine \alert{Variable} !
 		\begin{equation*}
 			\begin{pmatrix} x \\ x \end{pmatrix}
 			\quad \leadsto \quad
 			\emptyset
 		\end{equation*}
-		\item \textbf{Vertauschung.} Sei $t$ \textit{keine} Variable.
+		\item \textbf{Vertauschung.} Sei $t$ \alert{keine} Variable.
 		\begin{equation*}
 			\begin{pmatrix} t \\ x \end{pmatrix}
 			\quad \leadsto \quad 
@@ -348,10 +350,10 @@ h = g . f
 \end{frame}
 
 \begin{frame} \frametitle{Unifikationsalgorithmus}
-	\small
+	\footnotesize
 	\textbf{Ende:} keine Regel mehr anwendbar -- Entscheidung:
 	\begin{itemize}
-		\item \textbf{$t_1$, $t_2$ unifizierbar}: $M$ ist von der Form
+		\item $t_1$, $t_2$ \textbf{unifizierbar}: $M$ ist von der Form
 		\begin{equation*}
 			\menge{\binom{u_1}{t_1}, \binom{u_2}{t_2}, \dots, \binom{u_k}{t_k}} \qquad 
 			\begin{array}{c} 
@@ -367,108 +369,14 @@ h = g . f
 				\phi(x) &= x     & \footnotesize \text{für alle nicht vorkommenden Variablen}
 			\end{aligned}
 		\end{equation*}
-		\item \textbf{$t_1$, $t_2$ sind nicht unfizierbar}: $M$ hat nicht diese Form und keine Regel ist anwendbar
+		\item $t_1$, $t_2$ sind \textbf{nicht unfizierbar}: $M$ hat nicht diese Form und keine Regel ist anwendbar
 	\end{itemize}
 \end{frame}
 
 
-\arraycolsep0pt
-
-\begin{frame}\frametitle{Aufgabe 3}
-	\footnotesize
-	\begin{align*}
-		&\left\{\left( \begin{array}{lrrlcl}
-		\col{\delta(} \alpha \col{,} & \sigma(x_1 , \alpha) \col{,} & \sigma(x_2,x_3) \col{)} \\
-		\col{\delta(} \alpha \col{,} & \sigma(x_1, x_2)     \col{,} & \ \sigma(x_2,\gamma(x_2)\col{)}
-		\end{array}\right)\right\}\\
-		%
-		\overset{\text{Dek.}}{\Longrightarrow}
-		%
-		&\left\{ 
-		\begin{pmatrix}
-			\col{\alpha} \\ \col{\alpha}
-		\end{pmatrix}, 
-		\begin{pmatrix}
-			\col{\sigma(} x_1 \col{,} \alpha \col{)} \\ \col{\sigma}(x_1 \col{,} x_2 \col{)}
-		\end{pmatrix}, 
-		\begin{pmatrix}
-			\col{\sigma(} x_2 \col{,} x_3 \col{)} \\ \col{\sigma(} x_2 \col{,} \gamma(x_2) \col{)}
-		\end{pmatrix}
-		\right\}\\
-		%
-		\overset{\text{Dek.}}{\Longrightarrow^3}
-		%
-		&\left\{ \begin{pmatrix}
-		\col{x_1} \\ \col{x_1}
-		\end{pmatrix}, \begin{pmatrix}
-		\alpha \\ x_2
-		\end{pmatrix}, \begin{pmatrix}
-		\col{x_2} \\ \col{x_2}
-		\end{pmatrix}, \begin{pmatrix}
-		x_3 \\ \gamma(x_2)
-		\end{pmatrix}
-		\right\}\\
-		%
-		\overset{\text{El.}}{\Longrightarrow^2}
-		%
-		&\left\{ \begin{pmatrix}
-		\col{\alpha} \\ \col{x_2}
-		\end{pmatrix}, \begin{pmatrix}
-		x_3 \\ \gamma(x_2)
-		\end{pmatrix}
-		\right\}\\
-		%
-		\overset{\text{Vert.}}{\Longrightarrow}
-		%
-		&\left\{ \begin{pmatrix}
-		\col{x_2} \\ \alpha
-		\end{pmatrix}, \begin{pmatrix}
-		x_3 \\ \gamma(\col{x_2})
-		\end{pmatrix}
-		\right\}\\	
-		%
-		\overset{\text{Subst.}}{\Longrightarrow}
-		%
-		&\left\{ \begin{pmatrix}
-		x_2 \\ \alpha
-		\end{pmatrix}, \begin{pmatrix}
-		x_3 \\ \gamma(\alpha)
-		\end{pmatrix}
-		\right\}\\	
-	\end{align*}
-\end{frame}
 
 \begin{frame} \frametitle{Aufgabe 3}
-	\textbf{allgemeinster Unifikator:}
-	\begin{align*}
-		x_1 \mapsto x_1 \qquad
-		x_2 \mapsto \alpha \qquad
-		x_3 \mapsto \gamma(\alpha)
-	\end{align*}
-	
-	\pause
-	
-	\textbf{Teilaufgabe (b)}
-	\begin{align*}
-		t_1 &= \texttt{(a , [a])} \\
-		t_2 &= \texttt{(Int , [Double])} \\
-		t_3 &= \texttt{(b , c)}
-	\end{align*}
-	
-	\pause
-	
-	\begin{itemize}
-		\item $t_1$ und $t_2$ sind \textit{nicht} unifizierbar
-		
-		\item $t_1$ und $t_3$ sind unifizierbar mit $\texttt{a} \mapsto \texttt{a} \qquad \texttt{b} \mapsto \texttt{a} \qquad \texttt{c} \mapsto \texttt{[a]}$
-		
-		\item $t_2$ und $t_3$ sind unifizierbar mit $\texttt{b} \mapsto \texttt{Int} \qquad \texttt{c} \mapsto \texttt{[Double]}$
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame} \frametitle{Aufgabe 4}
-	\footnotesize
+	\scriptsize
 	\begin{align*}
 		&\left\{\left(\begin{array}{lcrlcl}
 		\col{\sigma(}\sigma(&x_1&,\alpha) \col{,} &\ \sigma(&\gamma(x_3) &, x_3)\col{)} \\
@@ -541,8 +449,9 @@ h = g . f
 	\end{align*}
 \end{frame}
 
-\begin{frame} \frametitle{Aufgabe 4}
-	\textbf{allgemeinster Unifikator:}
+\begin{frame} \frametitle{Aufgabe 3}
+	\footnotesize
+	(a) \textbf{allgemeinster Unifikator:}
 	\begin{align*}
 		\qquad x_1 \mapsto \gamma(\gamma(x_3)) \qquad
 		x_2 \mapsto \gamma(x_3) \qquad
@@ -551,7 +460,7 @@ h = g . f
 	
 	\pause
 	
-	\textbf{weitere Unifikatoren:} 
+	(b) \textbf{weitere Unifikatoren:} 
 	\begin{align*}
 		x_1 &\mapsto \gamma(\gamma(\alpha))
 		&x_2 &\mapsto \gamma(\alpha)
@@ -563,12 +472,31 @@ h = g . f
 	
 	\pause
 	
-	\textbf{Fehlschlag beim occur-check:}  \\ 
-	\textcolor{cdgray}{Alphabet: $\Sigma = \left\{\gamma^{(1)} \right\}$}
+	(c) \textbf{Fehlschlag beim occur-check:}  \\ 
+	\uncover<0>{(c)} \textcolor{cdgray}{Alphabet: $\Sigma = \left\{\gamma^{(1)} \right\}$}
 	\begin{align*}
 		t_1 &= x_1 \\
 		t_2 &= \gamma(x_1)
 	\end{align*}
+\end{frame}
+
+\begin{frame} \frametitle{Aufgabe 3 --- Teil (d)}
+	\footnotesize
+	\begin{align*}
+		t_1 &= \texttt{(a , [a])} \\
+		t_2 &= \texttt{(Int , [Double])} \\
+		t_3 &= \texttt{(b , c)}
+	\end{align*}
+	
+	\pause
+	
+	\begin{itemize}
+		\item $t_1$ und $t_2$ sind \uncover<3->{\textit{nicht} unifizierbar}
+		
+		\item $t_1$ und $t_3$ sind \uncover<4->{unifizierbar mit $\texttt{a} \mapsto \texttt{a}$, $\texttt{b} \mapsto \texttt{a}$, $\texttt{c} \mapsto \texttt{[a]}$}
+		
+		\item $t_2$ und $t_3$ sind \uncover<5->{unifizierbar mit $\texttt{b} \mapsto \texttt{Int}$, $\texttt{c} \mapsto \texttt{[Double]}$}
+	\end{itemize}
 \end{frame}
 
 

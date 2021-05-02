@@ -1,6 +1,8 @@
 -- Aufgabe 1
 data BinTree a = Branch a (BinTree a) (BinTree a) | Leaf a deriving Show
 
+
+-- Aufgabe 1 (a)
 testTree :: BinTree Int
 testTree = 
 
@@ -20,32 +22,3 @@ paths =
 tmap :: (a -> b) -> BinTree a -> BinTree b
 tmap   = 
 tmap   = 
-
--- Aufgabe 2 (a)
-unpairs :: [(a, b)] -> ([a], [b])
-unpairs  = 
-unpairs  = let 
-           in 
--- unpairs is als unzip in der Haskell-Standardbibliothek bereits vorhanden
-
--- Aufgabe 2 (b)
-{-
-  map (uncurry (+)) [(1,2), (3,4)]
-   
--}
-
--- Zusatzaufgabe 1 (a)
-check :: BinTree Bool -> Bool
-check  = 
-check  = 
-check  =  
-
--- Zusatzaufgabe 1 (b)
-toList :: BinTree a -> [a]
-toList  = 
-toList  = 
-
--- Zusatzaufgabe 1 (c)
-toTree :: [Int] -> BinTree Int
-toTree  = 
-toTree  =
