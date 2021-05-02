@@ -1,5 +1,6 @@
 -- Aufgabe 1
 
+data RoseTree = Node Int [RoseTree] deriving (Show)
 -- (a) Blätter zählen
 countLeaves :: RoseTree -> Int
 countLeaves (Node _ [] )    = 1
