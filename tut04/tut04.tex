@@ -241,7 +241,7 @@ uncurry f (x, y) = f x y
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\section{Unifikation \& Unifikationsalgorithmus \\ \textit{\normalsize Aufgabe 3}}
+\section{Unifikation \& Unifikationsalgorithmus \\ \textit{\normalsize Aufgabe 2}}
 
 
 \begin{frame}[fragile] \frametitle{Unifikation}
@@ -263,11 +263,14 @@ h = g . f
 	Wie müssen die Typvariablen \texttt{t} und \texttt{u} belegt werden, damit die Funktion \texttt{h} wohldefiniert ist, d.h. damit die Ergebnisse aus \texttt{f} wirklich in \texttt{g} eingesetzt werden dürfen?
 \end{frame}
 
-\begin{frame}[fragile] \frametitle{Unifikation}
+\begin{frame}[fragile] \frametitle{Typausdruck $\to$ Typterm}
 	\footnotesize
+	
+	\textbf{Ziel:} theoretischere Form von Typausdrücken
+	
 	\textbf{Typausdrücke}
 	\begin{itemize}
-		\item \texttt{Int}, \texttt{Bool}, \texttt{Floar}, \texttt{Char}, \texttt{String}
+		\item \texttt{Int}, \texttt{Bool}, \texttt{Float}, \texttt{Char}, \texttt{String}
 		\item Typvariablen
 		\item Listen, Tupel, Funktionen
 	\end{itemize}
@@ -345,7 +348,15 @@ h = g . f
 			\quad \leadsto \quad 
 			\begin{pmatrix} x \\ t \end{pmatrix}
 		\end{equation*}
-		\item \textbf{Substitution.} Sei $x$ eine Variable, $t$ keine Variable und $x$ kommt nicht in $t$ vor (occur check). Dann ersetze in jedem anderen Term die Variable $x$ durch $t$.
+		\item \textbf{Substitution.} Sei $x$ eine Variable, $t$ keine Variable. \\
+		\textit{Occur Check:} $x$ kommt nicht in $t$ vor \\
+		Dann ersetze in jedem anderen Term die Variable $x$ durch $t$.
+		\begin{equation*}
+			\begin{pmatrix} \alert{x} \\ t \end{pmatrix},
+			\begin{pmatrix} y \\ s(\alert{x}) \end{pmatrix}
+			\quad \leadsto \quad 
+			\begin{pmatrix} x \\ t \end{pmatrix},			\begin{pmatrix} y \\ s(\alert{t}) \end{pmatrix}
+		\end{equation*}
 	\end{itemize}
 \end{frame}
 
@@ -373,6 +384,33 @@ h = g . f
 	\end{itemize}
 \end{frame}
 
+\begin{frame} \frametitle{Occur Check}
+	\footnotesize
+	Um endlose Rekursionen zu unterbinden, benötigen die Regeln zum Vertauschen und zur Substitution gewisse Einschränkungen. 
+		
+	\textbf{Occur Check:}
+	Gegeben sei ein Termpaar $\binom{x}{t}$, wobei $x$ eine Variable und $t$ ein Typterm sei.
+	\vspace{-.5\baselineskip}
+	\begin{itemize} 
+		\item Kommt $x$ in $t$ vor, dann schlägt der Check fehl.
+		\item Kommt $x$ nicht in $t$ vor, dann ist der Check okay.
+	\end{itemize}
+
+	\textbf{Beispiel:}
+	\begin{itemize}
+		\item $\displaystyle\binom{x_1}{\gamma(x_1)} \leadsto$ Fehlschlag, da $x_1$ in $\gamma(x_1)$ vorkommt
+		\item $\displaystyle\binom{x_1}{\gamma(x_2)} \leadsto$ okay, da $x_1$ nicht in $\gamma(x_2)$ vorkommt
+	\end{itemize}
+
+	Was passiert, wenn wir substituieren obwohl der Occur Check fehlschlägt?
+	\begin{equation*}
+		\binom{x_1}{\gamma(x_1)}, \binom{x_2}{\gamma(\alert{x_1})}
+		\follows
+		\binom{x_1}{\gamma(x_1)}, \binom{x_2}{\gamma(\alert{\gamma(x_1)})}
+		\follows
+		\binom{x_1}{\gamma(x_1)}, \binom{x_2}{\gamma(\gamma(\alert{\gamma(x_1)})}
+	\end{equation*}
+\end{frame}
 
 
 \begin{frame} \frametitle{Aufgabe 3}
