@@ -52,7 +52,7 @@ os.remove(handoutFilename + '.out')
 os.remove(handoutFilename + '.snm')
 os.remove(handoutFilename + '.toc')
 os.remove(handoutFilename + '.vrb')
-os.remove(handoutFilename + '.listing')
+#os.remove(handoutFilename + '.listing')
 os.remove(tempFilename + texExt)
 # =============================================================================
 
@@ -79,7 +79,7 @@ os.remove(slidesFilename + '.out')
 os.remove(slidesFilename + '.snm')
 os.remove(slidesFilename + '.toc')
 os.remove(slidesFilename + '.vrb')
-os.remove(slidesFilename + '.listing')
+#os.remove(slidesFilename + '.listing')
 os.remove(tempFilename + texExt)
 # =============================================================================
 
