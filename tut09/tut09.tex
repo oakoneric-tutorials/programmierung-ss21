@@ -58,6 +58,7 @@
 }
 
 \usepackage{textgreek}
+\usepackage{adjustbox}
 
 
 \renewcommand{\emph}[1]{\textbf{#1}}
@@ -167,7 +168,7 @@ list(cons(X, Xs)) :- list(Xs).
 	
 	\begin{lstlisting}[firstnumber=5]
 istree(nil).
-istree(tree(_, L, R) :- istree(L), istree(R).
+istree(tree(_, L, R)) :- istree(L), istree(R).
 	\end{lstlisting}
 \end{frame}
 
@@ -308,10 +309,69 @@ eval( minus(L,R), X ) :-  eval(L, LE), eval(R, RE), sum(RE,  X, LE).
 	\end{lstlisting}
 \end{frame}
 
+\begin{frame}[fragile] \frametitle{Aufgabe 2 -- Teil (b)}
+	\scriptsize
+	\textbf{Gegeben:} zwei Bäume
+	\begin{align*}
+	\texttt{<t1>} &= \texttt{tree(a, tree(b, nil, nil), tree(v, nil, nil))} \\
+	\texttt{<t2>} &= \texttt{tree(c, nil, tree(d, nil, nil))}
+	\end{align*}
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+istree(nil).
+istree(tree(_, L, R)) :- istree(L), istree(R).
+
+insert(nil, _, nil).
+insert(tree(v, _, _), T, T) :- istree(T).
+insert(tree(X, L, R), T, tree(X, LT, RT)) :- insert(L, T, LT), insert(R, T, RT).
+	\end{lstlisting}
+	\textbf{Anschauung:} \texttt{insert(B, T, X)} ist wahr falls \texttt{X} ensteht, indem alle Knoten \texttt{v} in \texttt{B} durch den Baum \texttt{T} ersetzt werden oder nicht
+	
+	\textbf{Beispiel:}
+	\vspace{-1em}
+	\begin{tabular}{ccc}
+		\texttt{B} & \texttt{T} & \texttt{X} \\
+		\texttt{<t1>} & \texttt{<t2>} & Ergebnis(se) \\
+		\scalebox{0.7}{ \adjustbox{valign=t}{
+				\begin{forest}{for tree = {l=1em}}
+					[\texttt{a} [\texttt{b} [\texttt{nil}] [\texttt{nil}]] [\texttt{v} [\texttt{nil}] [\texttt{nil}]]]
+			\end{forest} } }
+		&
+		\scalebox{0.7}{ \adjustbox{valign=t}{
+				\begin{forest}{for tree = {l=1em}}
+					[\texttt{c} [\texttt{nil}] [\texttt{d} [\texttt{nil}] [\texttt{nil}]]]
+			\end{forest} } }
+		&
+		\scalebox{0.7}{ \adjustbox{valign=t}{ 
+				\begin{forest}{for tree = {l=1em}}
+					[\texttt{a} [\texttt{b} [\texttt{nil}] [\texttt{nil}]] [\texttt{v} [\texttt{nil}] [\texttt{nil}]]]
+			\end{forest} } 
+			\adjustbox{valign=b}{oder}
+			\adjustbox{valign=t}{ 
+				\begin{forest}{for tree = {l=1em}}
+					[\texttt{a} [\texttt{b} [\texttt{nil}] [\texttt{nil}]] [\texttt{c} [\texttt{nil}] [\texttt{d} [\texttt{nil}] [\texttt{nil}]]]]
+			\end{forest} } }
+	\end{tabular}
+\end{frame}
 
 \begin{frame}[fragile] \frametitle{Aufgabe 2 -- Teil (b)}
-	\footnotesize
+	\scriptsize
+	\textbf{Gegeben:} zwei Bäume
+	\begin{align*}
+		\texttt{<t1>} &= \texttt{tree(a, tree(b, nil, nil), tree(v, nil, nil))} \\
+		\texttt{<t2>} &= \texttt{tree(c, nil, tree(d, nil, nil))}
+	\end{align*}
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+istree(nil).
+istree(tree(_, L, R)) :- istree(L), istree(R).
+
+insert(nil, _, nil).
+insert(tree(v, _, _), T, T) :- istree(T).
+insert(tree(X, L, R), T, tree(X, LT, RT)) :- insert(L, T, LT), insert(R, T, RT).
+	\end{lstlisting}
+	\textbf{Gesucht:} eine Belegungen für \texttt{X}, die \texttt{?- insert(<t1>, <t2>, X).} erfüllt
 	
+
+
 	\textbf{Alternative 1:}
 	\begin{lstlisting}[style=refutation, basicstyle=\ttfamily\tiny]
                            ?-  insert(<t1>, <t2>, X).
@@ -325,7 +385,27 @@ eval( minus(L,R), X ) :-  eval(L, LE), eval(R, RE), sum(RE,  X, LE).
                            ?-* istree(nil), istree(nil), istree(nil).  % 2
                            ?-* .                                       % 4
 	\end{lstlisting}
+\end{frame}
 
+\begin{frame}[fragile] \frametitle{Aufgabe 2 -- Teil (b)}
+	\scriptsize
+	\textbf{Gegeben:} zwei Bäume
+	\begin{align*}
+	\texttt{<t1>} &= \texttt{tree(a, tree(b, nil, nil), tree(v, nil, nil))} \\
+	\texttt{<t2>} &= \texttt{tree(c, nil, tree(d, nil, nil))}
+	\end{align*}
+	\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+	istree(nil).
+	istree(tree(_, L, R)) :- istree(L), istree(R).
+	
+	insert(nil, _, nil).
+	insert(tree(v, _, _), T, T) :- istree(T).
+	insert(tree(X, L, R), T, tree(X, LT , RT)) 
+	:- insert(L, T, LT), insert(R, T, RT).
+	\end{lstlisting}
+	\textbf{Gesucht:} eine Belegungen für \texttt{X}, die \texttt{?- insert(<t1>, <t2>, X).} erfüllt
+
+	
 	\textbf{Alternative 2:} 
 	{\tiny die ersten vier Goals stimmen mit Alternative 1 überein}
 	\begin{lstlisting}[style=refutation, basicstyle=\ttfamily\tiny\color{cdgray}]
@@ -342,7 +422,7 @@ eval( minus(L,R), X ) :-  eval(L, LE), eval(R, RE), sum(RE,  X, LE).
                                insert(nil, <t2>, RT3).                 % 6
 {RT3 = nil, LT3 = nil}     ?-* .                                       % 4
 	\end{lstlisting}
-
+	
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
