@@ -62,7 +62,7 @@
 
 
 \usepackage{textgreek}
-
+\usepackage{adjustbox}
 
 \renewcommand{\emph}[1]{\textbf{#1}}
 \newcommand{\coloremph}[1]{\textcolor{cdpurple}{#1}}
@@ -327,52 +327,42 @@ JMP 0;
 	\footnotesize
 	\textbf{Aufgabe.}
 	
-	Symboltabellen:	
-	\begin{align*}
-		\text{tab}_{\texttt{f}} &= [ \texttt{f}/(\text{proc}, 1), \texttt{a}/(\text{var}, \text{lokal}, -3), \texttt{b}/(\text{var-ref}, -2) ] \\
-		\text{lokal-tab}_{\texttt{f}} &= [ \texttt{f}/(\text{proc}, 1), \texttt{a}/(\text{var}, \text{lokal}, -3), \texttt{b}/(\text{var-ref}, -2), \texttt{c}/(\text{var}, \text{lokal}, 1) ] \\
-		\text{lokal-tab}_{\texttt{main}} &= [ \texttt{f}/(\text{proc}, 1), \texttt{b}/(\text{var}, \text{global}, 1), \texttt{a}/(\text{var}, \text{lokal}, 1) ] \\
-	\end{align*}
-	
-	\pause
-	\textbf{Lösung.}
-	
-	\medskip 
-	
-	\begin{tabular}{>{\ttfamily}r >{\ttfamily}l >{\ttfamily}l >{\ttfamily}l >{\ttfamily}l >{\ttfamily}l}
-		2.2.1 & LOADI(-2) ;  LOAD(lokal,1) ;  GT ;  JMC 2.2.2 ; \\
-		& LOAD(lokal,-2)  ;  PUSH          ;  CALL 1 ; \\
-		& LOAD(lokal,1)   ;  LIT 1         ; ADD ; STORE(lokal,1) ; \\
-		& JMP 2.2.1 ; \medskip \\
-		2.2.2 & LOADA(lokal,1) ; STORE(lokal,-2) ; \\
-	\end{tabular}
-	
-	\begin{minipage}{\dimexpr0.5\linewidth-\fboxrule-\fboxsep}
-	\end{minipage}
+
 	
 \end{frame}
 
 \begin{frame} \frametitle{Aufgabe 1 -- Teil (b)}
 	\scriptsize
-	\textbf{Lösung.}
 	
+	\textbf{Symboltabellen:}	
+	\begin{align*}
+		%		\text{tab}_{\texttt{f}} &= [ \texttt{f}/(\text{proc}, 1), \texttt{a}/(\text{var}, \text{lokal}, -3), \texttt{b}/(\text{var-ref}, -2) ] \\
+		\text{lokal-tab}_{\texttt{f}} &= [ \texttt{f}/(\text{proc}, 1), \texttt{a}/(\text{var}, \text{lokal}, -3), \texttt{b}/(\text{var-ref}, -2), \texttt{c}/(\text{var}, \text{lokal}, 1) ] \\
+		\text{lokal-tab}_{\texttt{main}} &= [ \texttt{f}/(\text{proc}, 1), \texttt{b}/(\text{var}, \text{global}, 1), \texttt{a}/(\text{var}, \text{lokal}, 1) ]
+	\end{align*}
+
+	\textbf{Übersetzung:}
+	
+	\adjustbox{valign=t}{%
 	\begin{minipage}{\dimexpr0.33\linewidth-\fboxrule-\fboxsep}
 		\begin{tabular}{>{\ttfamily}r >{\ttfamily}l}
 			& INIT 1; \\
 			& CALL 2; \\
 			& JMP 0; \\
+			\\
 			\textcolor{cdgray!50}{\tiny 1} & INIT 1; \\
 			& LOAD(lokal, -3); \\
 			& STORE(lokal, 1); \\
+		\end{tabular}
+	\end{minipage}}
+	\adjustbox{valign=t}{%
+	\begin{minipage}{\dimexpr0.33\linewidth-\fboxrule-\fboxsep}
+		\begin{tabular}{>{\ttfamily}r >{\ttfamily}l}
 			\textcolor{cdgray!50}{\tiny 1.2.1} & LOAD(lokal, 1); \\
 			& LIT 0; \\
 			& GT; \\
 			& JMC 1.2.2; \\
 			& LOADI(-2); \\
-		\end{tabular}
-	\end{minipage}
-	\begin{minipage}{\dimexpr0.33\linewidth-\fboxrule-\fboxsep}
-		\begin{tabular}{>{\ttfamily}r >{\ttfamily}l}
 			& LIT 2; \\
 			& MUL; \\
 			& STOREI(-2); \\
@@ -382,12 +372,13 @@ JMP 0;
 			& STORE(lokal, 1); \\
 			& JMP 1.2.1; \\
 			\textcolor{cdgray!50}{\tiny 1.2.2} & RET 2; \\
-			\textcolor{cdgray!50}{\tiny 2} & INIT 1; \\
-			& READ(lokal, 1); \\
 		\end{tabular}
-	\end{minipage}
+	\end{minipage} }
+	\adjustbox{valign=t}{%
 	\begin{minipage}{\dimexpr0.33\linewidth-\fboxrule-\fboxsep}
 		\begin{tabular}{>{\ttfamily}r >{\ttfamily}l}
+			\textcolor{cdgray!50}{\tiny 2} & INIT 1; \\
+			& READ(lokal, 1); \\
 			& LIT 1; \\
 			& STORE(global, 1); \\
 			& LOAD(lokal, 1); \\
@@ -398,7 +389,7 @@ JMP 0;
 			& WRITE(global, 1); \\
 			& RET 0; \\
 		\end{tabular}
-	\end{minipage}
+	\end{minipage} }
 \end{frame}
 
 
