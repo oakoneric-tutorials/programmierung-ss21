@@ -254,27 +254,5 @@ f.3:   LOAD 2; LOAD 1; LOAD 2; MOD;
 	\end{lstlisting}
 \end{frame}
 
-\begin{frame}[t, fragile] \frametitle{Aufgabe 1 -- Teil (c) \hfill H${}_\text{0}$ $\to$ C${}_\text{0}$}
-	
-	\textbf{Gegeben:}
-	\begin{lstlisting}
-f1  x1 = if ((x1 `mod` 2) == 0) then f11 x1
-         else f12 x1
-f11 x1 = f2 (x1 `div` 2)
-f12 x1 = f2 (x1 - 1)
-f2  x1 = f3 (2 * x1)
-	\end{lstlisting}
-	
-	\textbf{Gesucht:} äquivalentes C${}_\text{0}$--Programm
-	\pause
-	\begin{lstlisting}[language=C]
-if ((x1 % 2) == 0)
-	x1 = x1 / 2;
-else
-	x1 = x1 - 1;
-x1 = 2 * x1;
-	\end{lstlisting}
-\end{frame}
-
 \end{document}
 
